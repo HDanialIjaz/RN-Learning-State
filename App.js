@@ -6,10 +6,16 @@ import { MaterialIcons, Ionicons, FontAwesome } from "@expo/vector-icons"; // Ic
 export default function App() {
   const [backgroundColor, setBackgroundColor] = useState("#003f8a"); // Initial background color
   const [isMobilePressed, setIsMobilePressed] = useState(false); // Track if mobile button is pressed
+  const [isFlashlightPressed, setIsFlashlightPressed] = useState(false); // Track if flashlight button is pressed
   const [hideIcons, setHideIcons] = useState(false); // Control visibility of icons except Power Button
 
   const handleMobilePress = () => {
     setIsMobilePressed(true); // Set mobile button as pressed
+    setIsFlashlightPressed(false); // Reset flashlight button
+  };
+  const handleFlashlightPress = () => {
+    setIsFlashlightPressed(true); // Set flashlight button as pressed
+    setIsMobilePressed(false); // Reset mobile button
   };
 
   const handlePowerPress = () => {
@@ -17,7 +23,13 @@ export default function App() {
       // If the mobile icon was pressed first, change background to white and hide other icons
       setBackgroundColor("white");
       setHideIcons(true);
-      setIsMobilePressed(false); // Reset mobile press state
+      setIsMobilePressed(false);
+
+    } else if (isFlashlightPressed) {
+      // If the flashlight icon was pressed first, change background to yellow and hide other icons
+      setBackgroundColor("yellow");
+      setHideIcons(true);
+      setIsFlashlightPressed(false);
     } else {
       // If the mobile icon was not pressed, reset background to blue and show other icons
       setBackgroundColor("#003f8a");
@@ -37,11 +49,21 @@ export default function App() {
       {/* Other buttons (flashlight and mobile-phone) are conditionally hidden */}
       {!hideIcons && (
         <View style={styles.bottomSection}>
-          <TouchableOpacity>
-            <Ionicons name="flashlight" size={40} color="yellow" />
+          <TouchableOpacity onPress={handleFlashlightPress}
+            style={[
+              styles.iconButton,
+              { backgroundColor: isFlashlightPressed ? "yellow" : "#005fb8" },
+            ]}>
+            <Ionicons name="flashlight" size={40} color="white" />
           </TouchableOpacity>
-          <TouchableOpacity onPress={handleMobilePress}>
-            <FontAwesome name="mobile-phone" size={40} color="yellow" />
+          <TouchableOpacity
+            onPress={handleMobilePress}
+            style={[
+              styles.iconButton,
+              { backgroundColor: isMobilePressed ? "yellow" : "#005fb8" },
+            ]}
+          >
+            <FontAwesome name="mobile-phone" size={40} color="white" />
           </TouchableOpacity>
         </View>
       )}
@@ -68,15 +90,22 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     borderRadius: 40,
-    // shadowColor: "yellow",
-    // shadowOffset: { width: 10, height: 40 },
-    // shadowOpacity: 0.3,
-    // shadowRadius: 4,
-    // elevation: 35,
+    shadowColor: "yellow",
+    shadowOffset: { width: 10, height: 40 },
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
+    elevation: 35,
   },
   bottomSection: {
     flexDirection: "row",
     justifyContent: "space-between",
     width: "50%",
+  },
+  iconButton: {
+    width: 50,
+    height: 50,
+    justifyContent: "center",
+    alignItems: "center",
+    borderRadius: 40,
   },
 });
